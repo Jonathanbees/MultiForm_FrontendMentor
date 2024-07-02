@@ -4,9 +4,9 @@ import App from './App.jsx'
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <div className="flex justify-center items-center h-screen">
-    <App />
+  <body>
+    <div className="flex justify-center items-center h-screen bg-Magnolia">
+      <App />
     </div>,
-  </React.StrictMode>,
+  </body>,
 )
