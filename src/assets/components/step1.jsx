@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-export function Step1({goNext}){
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [celphone, setCelphone] = useState('');
+export function Step1({goNext, formData, updateFormData}){
+    const [name, setName] = useState(formData.name ||'');
+    const [email, setEmail] = useState(formData.email ||'');
+    const [celphone, setCelphone] = useState(formData.celphone ||'');
+    useEffect(() => {
+        updateFormData({ name, email, celphone });
+      }, [name, email, celphone]);
 
     const validateForm = !name || !email || !celphone;
     return (
