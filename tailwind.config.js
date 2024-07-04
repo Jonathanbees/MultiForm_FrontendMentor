@@ -21,6 +21,10 @@ export default {
       },
       fontFamily: {
         'ubuntu': ['Ubuntu', 'sans-serif']
+      },
+      screens: {
+        'sm': '375px',
+        'lg': '768px'
       }
     },
   },
