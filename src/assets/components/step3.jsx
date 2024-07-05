@@ -1,12 +1,36 @@
+import { useState,useEffect, useRef} from "react";
 export function Step3({ goNext, goPrevious, formData, updateFormData }) {
+
     const items = [
         { id: 1, title: "Online service", description: "Access to multiplayer games", price: "+$1/mo" },
         { id: 2, title: "Larger storage", description: "Extra 1TB of cloud save", price: "+$2/mo" },
         { id: 3, title: "Customizable Profile", description: "Custom theme on your profile", price: "+$2/mo" },
     ];
+    const [selectedAddons, setSelectedAddons] = useState(formData?.addons || []);
+    const prevAddonsRef = useRef(selectedAddons);
+
+    useEffect(() => {
+        const currentAddons = formData.addons || [];
+        const prevAddonsString = JSON.stringify(prevAddonsRef.current.sort());
+        const currentAddonsString = JSON.stringify(currentAddons.sort());
+
+        if (prevAddonsString !== currentAddonsString) {
+            updateFormData('step3', { addons: selectedAddons });
+        }
+
+        prevAddonsRef.current = selectedAddons;
+    }, [selectedAddons, updateFormData, formData.addons]);
 
     const handleCheckboxChange = (itemId) => {
-        console.log("Seleccionado el ítem:", itemId);
+        console.log(itemId);
+        setSelectedAddons((currentSelectedAddons) => {
+            const itemIndex = currentSelectedAddons.indexOf(itemId);
+            if (itemIndex === -1) {
+                return [...currentSelectedAddons, itemId];
+            } else {
+                return currentSelectedAddons.filter((id) => id !== itemId);
+            }
+        });
     };
 
     return (
@@ -22,6 +46,7 @@ export function Step3({ goNext, goPrevious, formData, updateFormData }) {
                                     type="checkbox"
                                     id={`checkbox-${item.id}`}
                                     onChange={() => handleCheckboxChange(item.id)}
+                                    checked={selectedAddons.includes(item.id)} // Asegura que el checkbox refleje su estado correctamente
                                     className="w-4 h-4"
                                 />
                                 <label htmlFor={`checkbox-${item.id}`} className="flex flex-col">
