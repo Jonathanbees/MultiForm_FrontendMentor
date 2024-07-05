@@ -1,4 +1,5 @@
-import { useState,useEffect, useRef} from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { CheckBoxItem } from "./checkBoxItem.jsx";
 export function Step3({ goNext, goPrevious, formData, updateFormData }) {
 
     const items = [
@@ -7,22 +8,27 @@ export function Step3({ goNext, goPrevious, formData, updateFormData }) {
         { id: 3, title: "Customizable Profile", description: "Custom theme on your profile", price: "+$2/mo" },
     ];
     const [selectedAddons, setSelectedAddons] = useState(formData?.addons || []);
-    const prevAddonsRef = useRef(selectedAddons);
+    //console.log(selectedAddons)
+    const prevAddonsRef = useRef();
 
     useEffect(() => {
-        const currentAddons = formData.addons || [];
-        const prevAddonsString = JSON.stringify(prevAddonsRef.current.sort());
-        const currentAddonsString = JSON.stringify(currentAddons.sort());
+        if (prevAddonsRef.current) {
+            // Hacer copias de los arreglos antes de ordenar para evitar modificar los originales
+            const prevAddonsCopy = [...prevAddonsRef.current];
+            const selectedAddonsCopy = [...selectedAddons];
 
-        if (prevAddonsString !== currentAddonsString) {
-            updateFormData('step3', { addons: selectedAddons });
+            // Convertir a string después de ordenar las copias
+            const prevAddonsString = JSON.stringify(prevAddonsCopy.sort());
+            const currentAddonsString = JSON.stringify(selectedAddonsCopy.sort());
+
+            if (prevAddonsString !== currentAddonsString) {
+                updateFormData({ addons: selectedAddons });
+            }
         }
-
         prevAddonsRef.current = selectedAddons;
-    }, [selectedAddons, updateFormData, formData.addons]);
+    }, [selectedAddons, updateFormData]);
 
-    const handleCheckboxChange = (itemId) => {
-        console.log(itemId);
+    const handleCheckboxChange = useCallback((itemId) => {
         setSelectedAddons((currentSelectedAddons) => {
             const itemIndex = currentSelectedAddons.indexOf(itemId);
             if (itemIndex === -1) {
@@ -31,31 +37,21 @@ export function Step3({ goNext, goPrevious, formData, updateFormData }) {
                 return currentSelectedAddons.filter((id) => id !== itemId);
             }
         });
-    };
+    }, []);
 
     return (
-        <div className="menu text-justify px-10 h-4/5 justify-between sm:px-2 sm:py-2">
-            <div className="p-8 bg-white border lg:border-0 sm:absolute sm:top-36 lg:top-0 sm:left-5 sm:right-5 sm:z-10 lg:z-0 lg:right-0 lg:left-0 sm:rounded-xl lg:static lg:h-full">
+        <div className="menu text-justify px-10 h-5/6 justify-between sm:px-0 sm:py-2">
+            <div className="lg:p-8 sm:px-0 sm:py-8 bg-white border lg:border-0 sm:absolute sm:top-36 lg:top-0 sm:left-5 sm:right-5 sm:z-10 lg:z-0 lg:right-0 lg:left-0 sm:rounded-xl lg:static lg:h-full">
                 <div className="flex flex-col space-y-4 w-full sm:w-4/5 m-auto h-full">
                     <h1 className='text-3xl font-bold font-ubuntu text-Marine-blue'>Pick add-ons</h1>
                     <span className='text-gray-400 font-ubuntu'>Add-ons help enhance your gaming experience</span>
-                    {items.map((item) => (
-                        <div key={item.id} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
-                            <div className="flex items-center pl-1 space-x-4">
-                                <input
-                                    type="checkbox"
-                                    id={`checkbox-${item.id}`}
-                                    onChange={() => handleCheckboxChange(item.id)}
-                                    checked={selectedAddons.includes(item.id)} // Asegura que el checkbox refleje su estado correctamente
-                                    className="w-4 h-4"
-                                />
-                                <label htmlFor={`checkbox-${item.id}`} className="flex flex-col">
-                                    <span className="text-sm font-semibold">{item.title}</span>
-                                    <span className="text-xs text-gray-600">{item.description}</span>
-                                </label>
-                            </div>
-                            <div className="text-sm font-semibold">{item.price}</div>
-                        </div>
+                    {items.map(item => (
+                        <CheckBoxItem
+                            key={item.id}
+                            item={item}
+                            handleCheckboxChange={handleCheckboxChange}
+                            selectedAddons={selectedAddons}
+                        />
                     ))}
                 </div>
                 <div className="flex justify-between items-end w-full sm:w-full fixed lg:static sm:bottom-0 sm:left-0 sm:right-0 sm:bg-white sm:p-4 lg:px-0 lg:items-end">

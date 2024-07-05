@@ -7,8 +7,6 @@ export function Step1({ goNext, formData, updateFormData }) {
     useEffect(() => {
         updateFormData({ name, email, celphone });
     }, [name, email, celphone]);
-
-    const validateForm = !name || !email || !celphone;
     return (
         <div className="menu text-justify lg:pl-10 md:p-2 h-full lg:m-auto lg:content-center lg:items-start lg:w-full sm:content-center sm:m-auto sm:p-5">
             <div className="p-8 bg-white border lg:border-0 lg:static sm:absolute sm:top-36 sm:left-5 sm:right-5 sm:z-10 lg:z-0 lg:right-0 lg:left-0 sm:rounded-xl">

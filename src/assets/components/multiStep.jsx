@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState} from 'react';
 import {Step1} from './step1.jsx';
 import {Step2} from './step2.jsx';
 import {Step3} from './step3.jsx';
@@ -10,7 +10,7 @@ export function MultiStepForm({currentStep, setCurrentStep}) {
       
       return savedData ? JSON.parse(savedData) : { step1: '', 
         step2: { selectedPlan: '', billingPeriod: 'Monthly' }, //inicializa los datos del formulario, selectedPlan es para el plan seleccionado y billingPeriod es para el periodo de facturación
-        step3: { addons: [] },
+        step3: {addons:[]}
       }; 
     });
   
@@ -18,21 +18,15 @@ export function MultiStepForm({currentStep, setCurrentStep}) {
     const goToPreviousStep = () => setCurrentStep(currentStep - 1);
 
     useEffect(() => {
-      ///console.log('formData', formData) //closed by the addons, because it throws an empty object, so, the console.log executes indefinitely
+      //console.log('formData', formData) //closed by the addons, because it throws an empty object, so, the console.log executes indefinitely
       localStorage.setItem('formData', JSON.stringify(formData));
     }, [formData]);
 
     const updateFormData = useCallback((step, data) => {
-      setFormData((prevFormData) => {
-        // Compara si los datos para el paso actual son diferentes antes de actualizar
-        if (JSON.stringify(prevFormData[step]) !== JSON.stringify(data)) {
-          return {
-            ...prevFormData,
-            [step]: { ...prevFormData[step], ...data },
-          };
-        }
-        return prevFormData; // Retorna el estado anterior si no hay cambios
-      });
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [step]: { ...prevFormData[step], ...data },
+      }));
     }, []);
   
     return (
