@@ -23,7 +23,7 @@ export default {
         'ubuntu': ['Ubuntu', 'sans-serif']
       },
       screens: {
-        'sm': '375px',
+        'sm': '250px',
         'lg': '768px'
       }
     },

@@ -13,14 +13,15 @@ export function Step2({ goNext, goPrevious, formData, updateFormData }) {
     //ambos estados anteriores sirven para el toogle del botón de facturación, el plan no se inicializa como estado porque se actualiza en el formulario directamente
 
     /* Inicio de la sección de planes */
-    const plans = [ //array de planes
-        { id: 'Arcade', name: 'Arcade', price: '$9/mo', icon: <img src={IconArcadeImage} alt="Arcade Plan" /> },
-        { id: 'Advanced', name: 'Advanced', price: '$12/mo', icon: <IconAdvance /> },
-        { id: 'Pro', name: 'Pro', price: '$15/mo', icon: <IconPro /> },
+    const plans = [
+        { id: 'Arcade', name: 'Arcade', price: 9, icon: <img src={IconArcadeImage} alt="Arcade Plan" /> },
+        { id: 'Advanced', name: 'Advanced', price: 12, icon: <IconAdvance /> },
+        { id: 'Pro', name: 'Pro', price: 15, icon: <IconPro /> },
     ];
     const selectPlan = (planId) => { //selecciona el plan
+        const selectedPlan = plans.find(plan => plan.id === planId);
         setSelectedPlan(planId);
-        updateFormData({ ...formData, selectedPlan: planId }); //actualiza el plan seleccionado en formData
+        updateFormData({...formData.step2, selectedPlan: planId, price: selectedPlan.price }); //actualiza el plan seleccionado en formData
     };
 
     /* Fin de la sección de planes */
@@ -53,7 +54,7 @@ export function Step2({ goNext, goPrevious, formData, updateFormData }) {
                                 <div className='text-2xl lg:mb-12 sm:m-5 lg:m-0 sm:justify-self-center sm:self-center lg:justify-self-start lg:self-start'>{plan.icon}</div>
                                 <div>
                                     <h3 className='font-bold'>{plan.name}</h3>
-                                    <p className='font-light text-sm text-gray-400'>{plan.price}</p>
+                                    <p className='font-light text-sm text-gray-400'>{`$${plan.price}/mo`}</p>
                                 </div>
                             </div>
                         </div>
