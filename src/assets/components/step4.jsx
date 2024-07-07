@@ -1,14 +1,11 @@
-export function Step4({ goPrevious, formData, updateFormData }) {
+import { useState,useEffect } from 'react';
+import { Modal } from './modal.jsx';
+export function Step4({ goPrevious,setCurrentStep, formData, updateFormData, resetForm }) {
     // Extraer billingPrice, selectedPlan, y datos de step3 de formData
     const { step2: { price, selectedPlan, billingPeriod }, step3: addons } = formData;
     console.log(price, selectedPlan, billingPeriod, addons);
     //console.log(typeof addons)
-    const clearFormStepsFromLocalStorage = () => {
-        localStorage.removeItem('step1');
-        localStorage.removeItem('step2');
-        localStorage.removeItem('step3');
-        localStorage.removeItem('step4');
-    };
+
     /* extraer la ultima posicion del objeto addons (ya que los otros objetos son pura mierda) */
     // Convertir addonsObject a un array
     const addonskeys = Object.keys(addons);
@@ -25,26 +22,40 @@ export function Step4({ goPrevious, formData, updateFormData }) {
 
     const addonDetails = {
         1: { title: "Online service", description: "Access to multiplayer games", price: 1 },
-        2: { title: "Larger storage", description: "Extra 1TB of cloud save", price: 1 },
+        2: { title: "Larger storage", description: "Extra 1TB of cloud save", price: 2 },
         3: { title: "Customizable Profile", description: "Custom theme on your profile", price: 2 },
     };
 
-    // Función para manejar el envío del formulario
+
+    const [enviado, setEnviado] = useState(false); // Estado para el modal
+
+    //Función para manejar el envío del formulario
     const handleSubmit = () => {
-        // Aquí iría la lógica de envío del formulario
-        // Por ejemplo, updateFormData(formData) o una llamada a API
-
-        // Luego de enviar, limpiar localStorage
-        clearFormStepsFromLocalStorage();
-
-        // Opcionalmente, redirigir al usuario o mostrar un mensaje de éxito
+        setEnviado(true); // Mostrar el modal
+        resetForm(); // Resetear el formulario
     };
+
+    useEffect(() => {
+        if (enviado) {
+            const timer = setTimeout(() => {
+                setCurrentStep(1);
+            }, 7000); // Espera 5 segundos antes de ejecutar
+
+            return () => clearTimeout(timer);
+        }
+    }, [enviado]);
+
+    if (enviado) {
+        return <Modal enviado={setEnviado} />;
+        
+    }
     //sumar valores de price con los addons que haya seleccionado el usuario:
     const total = addonsArrayValues.reduce((acc, addonId) => {
         const addon = addonDetails[addonId];
         return acc + addon.price;
     }, price);
     console.log(total)
+
 
     return (
         <div className="menu text-justify px-10 sm:h-full lg:h-5/6 justify-between sm:px-0 sm:py-2">
@@ -55,7 +66,7 @@ export function Step4({ goPrevious, formData, updateFormData }) {
                     <div className="flex justify-between p-4 bg-gray-100 rounded-t-md mt-6"> {/* Aplica redondeado solo en la parte superior */}
                         <div className="pl-1">
                             <h3 className="text-Marine-blue font-semibold font-ubuntu pointer-events-none">{selectedPlan} {`(${billingPeriod})`}</h3>
-                            <a className="text-base cursor-pointer opacity-60 text-Purplish-blue hover:opacity-100 underline">Change</a>
+                            <a className="text-base cursor-pointer opacity-60 text-Purplish-blue hover:opacity-100 underline" onClick={() => setCurrentStep(2)}>Change</a>
                         </div>
                         <div className="text-base font-ubuntu font-semibold flex items-center justify-center text-Marine-blue">{`$${price}/mo`}</div>
                     </div>
@@ -66,7 +77,7 @@ export function Step4({ goPrevious, formData, updateFormData }) {
                                 <div key={addonId} className="p-2 rounded-sm">
                                     <div className="flex justify-between">
                                         <span className="font-normal text-sm pointer-events-none text-gray-400">{addon.title}</span>
-                                        <span>{`$${addon.price}/mo`}</span>
+                                        <span className="text-gray-500 pr-3">{`$${addon.price}/mo`}</span>
                                     </div>
                                 </div>
                             );
@@ -75,8 +86,8 @@ export function Step4({ goPrevious, formData, updateFormData }) {
                     <div className="bg-none rounded-b-md">
                         <div className="p-3 rounded-sm">
                             <div className="flex justify-between">
-                                <span className="font-normal text-sm pointer-events-none text-gray-400">Total {billingPeriod === 'Monthly' ? `(per month)`:`(per year)` }</span>
-                                <span className="font-ubuntu text-Purplish-blue font-semibold">
+                                <span className="font-normal text-sm pointer-events-none pr-2 text-gray-400">Total {billingPeriod === 'Monthly' ? `(per month)`:`(per year)` }</span>
+                                <span className="font-ubuntu text-Purplish-blue font-bold p-2 ">
                                     {billingPeriod === 'Monthly' ? `$${total}/mo` : `$${total}/yr`}
                                 </span>
                             </div>
