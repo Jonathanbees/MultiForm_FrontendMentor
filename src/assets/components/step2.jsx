@@ -41,6 +41,8 @@ export function Step2({ goNext, goPrevious, formData, updateFormData }) {
         updateFormData({ selectedPlan, buttonPosition });
     }, [selectedPlan, buttonPosition]);
 
+    const buttondisabled = selectedPlan === '';
+
     return (
         <div className="menu text-justify lg:pl-10 md:p-2 h-full lg:m-auto lg:content-center lg:items-start lg:w-full sm:content-center sm:m-auto sm:p-5">
             <div className="p-8 bg-white border lg:border-0 lg:static sm:absolute sm:top-36 sm:left-5 sm:right-5 sm:z-10 lg:z-0 lg:right-0 lg:left-0 sm:rounded-xl">
@@ -74,7 +76,7 @@ export function Step2({ goNext, goPrevious, formData, updateFormData }) {
                 </div>
                 <div className="flex justify-between items-end w-full sm:w-full fixed lg:static sm:bottom-0 sm:left-0 sm:right-0 sm:bg-white sm:p-4 lg:px-0 lg:items-end">
                     <button onClick={goPrevious} className='w-full sm:w-auto px-4 py-2 bg-Marine-blue text-white rounded-lg font-ubuntu font-normal hover:bg-white hover:text-Marine-blue sm:mr-2'>Go back</button>
-                    <button onClick={goNext} className='w-full sm:w-auto px-4 py-2 bg-Marine-blue text-white rounded-lg font-ubuntu font-normal sm:ml-2'>Next Step</button>
+                    <button onClick={goNext} disabled={buttondisabled} className='w-full sm:w-auto px-4 py-2 bg-Marine-blue text-white rounded-lg font-ubuntu font-normal sm:ml-2'>Next Step</button>
                 </div>
             </div>
         </div>
